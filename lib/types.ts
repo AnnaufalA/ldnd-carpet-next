@@ -6,32 +6,34 @@ export type AircraftTypeGroup = 'B737' | 'A320' | 'A330' | 'B777' | 'ATR'
 
 export interface Aircraft {
     id: string
-    ac_type: string
-    ac_type_group: AircraftTypeGroup
+    acType: string
+    acTypeGroup: AircraftTypeGroup
     registration: string
     airline: Airline
-    created_at: string
+    createdAt: string
 }
 
 export interface CarpetItem {
     id: string
-    aircraft_id: string
-    carpet_type: CarpetType
-    interval_months: number
-    last_done: string | null
-    next_due: string | null
+    aircraftId: string
+    carpetType: CarpetType
+    intervalMonths: number
+    lastDone: string | null
+    nextDue: string | null
     remark: string | null
-    created_at: string
+    coatroom: string | null
+    vendor: string | null
+    createdAt: string
     aircraft?: Aircraft
 }
 
 export interface ReplacementHistory {
     id: string
-    carpet_item_id: string
-    done_number: number
-    done_date: string
-    is_premature: boolean
-    created_at: string
+    carpetItemId: string
+    doneNumber: number
+    doneDate: string
+    isPremature: boolean
+    createdAt: string
 }
 
 export interface TypeCount {

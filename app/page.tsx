@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Plane, AlertTriangle, Clock, LayoutDashboard, Database } from 'lucide-react'
 import type { DashboardData, TypeCount } from '@/lib/types'
 
 const AC_TYPES = ['B737', 'A320', 'A330', 'B777'] as const
@@ -41,8 +42,26 @@ function formatDate(d: Date) {
   return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-/* ── Type count card ── */
-function TypeCard({ type, count, isDanger }: { type: string; count: number; isDanger: boolean }) {
+const GA_TYPES = ['B737-800', 'B777-300', 'A330-200', 'A330-300', 'A330-900']
+const QG_TYPES = ['A320', 'ATR']
+
+/* ── Aircraft Type Vertical Row ── */
+function TypeRow({ type, count, isDanger }: { type: string; count: number; isDanger: boolean }) {
+  const safe = count === 0
+
+  if (safe) {
+    return (
+      <div style={{
+        border: `1px solid ${COLORS.border}`, background: COLORS.surface,
+        borderRadius: 8, padding: '8px 12px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <span style={{ color: COLORS.muted, fontSize: 12, fontWeight: 600 }}>{type}</span>
+        <span style={{ color: COLORS.light, fontSize: 13, fontWeight: 700 }}>{count}</span>
+      </div>
+    )
+  }
+
   const bg = isDanger ? COLORS.dangerLight : COLORS.warningLight
   const border = isDanger ? COLORS.dangerBorder : COLORS.warningBorder
   const numClr = isDanger ? COLORS.danger : COLORS.warning
@@ -50,83 +69,58 @@ function TypeCard({ type, count, isDanger }: { type: string; count: number; isDa
 
   return (
     <div style={{
-      background: bg, border: `1px solid ${border}`,
-      borderRadius: 12, padding: '12px 8px', textAlign: 'center', flex: 1,
+      border: `1px solid ${border}`, background: bg,
+      borderRadius: 8, padding: '8px 12px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     }}>
-      <div style={{ fontSize: 26, fontWeight: 700, color: numClr, lineHeight: 1 }}>{count}</div>
-      <div style={{ fontSize: 11, fontWeight: 600, color: lblClr, marginTop: 4 }}>{type}</div>
+      <span style={{ color: lblClr, fontSize: 12, fontWeight: 700 }}>{type}</span>
+      <span style={{ color: numClr, fontSize: 14, fontWeight: 800 }}>{count}</span>
     </div>
   )
 }
 
-/* ── Carpet type row ── */
-function CarpetRow({ label, counts, isDanger, dotColor }: {
-  label: string; counts: TypeCount; isDanger: boolean; dotColor: string
+/* ── Airline Column (GA / QG) ── */
+function AirlineColumn({ name, badge, color, items, isDanger, types }: {
+  name: string; badge: string; color: string;
+  items: DashboardData['nearDueItems']
+  isDanger: boolean; types: string[]
 }) {
-  const total = AC_TYPES.reduce((s, t) => s + (counts[t] ?? 0), 0)
   return (
-    <div style={{ marginBottom: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <span style={{ width: 8, height: 8, borderRadius: '50%', background: dotColor, display: 'inline-block' }} />
-        <span style={{ fontSize: 13, fontWeight: 600, color: COLORS.text }}>{label}</span>
-        <span style={{ fontSize: 12, color: COLORS.muted }}>({total} item{total !== 1 ? 's' : ''})</span>
-      </div>
-      <div style={{ display: 'flex', gap: 8 }}>
-        {AC_TYPES.map(t => <TypeCard key={t} type={t} count={counts[t] ?? 0} isDanger={isDanger} />)}
-      </div>
-    </div>
-  )
-}
-
-/* ── GA / QG tabs ── */
-function AirlinePanel({ data, isDanger }: {
-  data: { GA: { aisle: TypeCount; underseat: TypeCount }; QG: { aisle: TypeCount; underseat: TypeCount } }
-  isDanger: boolean
-}) {
-  const [tab, setTab] = useState<'GA' | 'QG'>('GA')
-
-  return (
-    <div>
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, borderBottom: `1px solid ${COLORS.border}`, marginBottom: 20 }}>
-        {(['GA', 'QG'] as const).map(key => {
-          const active = tab === key
-          const isGA = key === 'GA'
-          return (
-            <button
-              key={key}
-              onClick={() => setTab(key)}
-              style={{
-                padding: '8px 16px',
-                border: active ? `1px solid ${COLORS.border}` : 'none',
-                borderBottom: active ? `1px solid ${COLORS.surface}` : 'none',
-                borderRadius: '8px 8px 0 0',
-                marginBottom: active ? -1 : 0,
-                background: active ? COLORS.surface : 'transparent',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: 13,
-                color: active ? COLORS.blue : COLORS.muted,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-              }}
-            >
-              {isGA ? 'Garuda Indonesia' : 'Citilink'}
-              <span style={{
-                background: isGA ? COLORS.gaLight : COLORS.qgLight,
-                color: isGA ? COLORS.gaColor : COLORS.qgColor,
-                fontSize: 10, fontWeight: 700,
-                padding: '1px 6px', borderRadius: 99,
-              }}>{key}</span>
-            </button>
-          )
-        })}
+    <div style={{ background: '#f8fafc', borderRadius: 12, padding: 20, border: `1px solid ${COLORS.border}` }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, borderBottom: `2px solid ${COLORS.border}`, paddingBottom: 12 }}>
+        <span style={{ fontWeight: 800, fontSize: 15, color }}>{name}</span>
+        <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 99, background: COLORS.border, color: COLORS.muted, fontWeight: 700 }}>{badge}</span>
       </div>
 
-      {/* Content */}
-      <CarpetRow label="Aisle Carpet" counts={data[tab].aisle} isDanger={isDanger} dotColor={COLORS.blue} />
-      <CarpetRow label="Underseat Carpet" counts={data[tab].underseat} isDanger={isDanger} dotColor={COLORS.green} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
+        {/* Aisle Left */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: COLORS.blue }} />
+            <span style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>Aisle Carpet</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {types.map(t => {
+              const count = items.filter(i => i.carpetType === 'Aisle' && i.aircraft?.acType === t).length
+              return <TypeRow key={t} type={t} count={count} isDanger={isDanger} />
+            })}
+          </div>
+        </div>
+
+        {/* Underseat Right */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: COLORS.green }} />
+            <span style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>Underseat</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {types.map(t => {
+              const count = items.filter(i => i.carpetType === 'Underseat' && i.aircraft?.acType === t).length
+              return <TypeRow key={t} type={t} count={count} isDanger={isDanger} />
+            })}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -137,7 +131,7 @@ function DetailTable({ items }: { items: DashboardData['nearDueItems'] }) {
   if (!items.length) return null
 
   const sorted = [...items].sort((a, b) =>
-    new Date(a.next_due ?? '').getTime() - new Date(b.next_due ?? '').getTime()
+    new Date(a.nextDue ?? '').getTime() - new Date(b.nextDue ?? '').getTime()
   )
 
   return (
@@ -166,23 +160,23 @@ function DetailTable({ items }: { items: DashboardData['nearDueItems'] }) {
             </thead>
             <tbody>
               {sorted.map((item, i) => {
-                const days = item.next_due
-                  ? Math.ceil((new Date(item.next_due).getTime() - Date.now()) / 86400000)
+                const days = item.nextDue
+                  ? Math.ceil((new Date(item.nextDue).getTime() - Date.now()) / 86400000)
                   : 0
                 const overdue = days <= 0
                 return (
                   <tr key={item.id} style={{ background: i % 2 === 0 ? COLORS.surface : '#f8fafc', borderBottom: i < sorted.length - 1 ? `1px solid ${COLORS.border}` : 'none' }}>
                     <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontWeight: 700, color: COLORS.text }}>{item.aircraft?.registration}</td>
-                    <td style={{ padding: '10px 14px', color: COLORS.muted }}>{item.aircraft?.ac_type}</td>
+                    <td style={{ padding: '10px 14px', color: COLORS.muted }}>{item.aircraft?.acType}</td>
                     <td style={{ padding: '10px 14px' }}>
                       <span style={{
                         padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 600,
-                        background: item.carpet_type === 'Aisle' ? COLORS.blueLight : COLORS.greenLight,
-                        color: item.carpet_type === 'Aisle' ? COLORS.blue : COLORS.green,
-                      }}>{item.carpet_type}</span>
+                        background: item.carpetType === 'Aisle' ? COLORS.blueLight : COLORS.greenLight,
+                        color: item.carpetType === 'Aisle' ? COLORS.blue : COLORS.green,
+                      }}>{item.carpetType}</span>
                     </td>
-                    <td style={{ padding: '10px 14px', color: COLORS.muted }}>{item.last_done ?? '-'}</td>
-                    <td style={{ padding: '10px 14px', fontWeight: 600, color: COLORS.text }}>{item.next_due ?? '-'}</td>
+                    <td style={{ padding: '10px 14px', color: COLORS.muted }}>{item.lastDone ?? '-'}</td>
+                    <td style={{ padding: '10px 14px', fontWeight: 600, color: COLORS.text }}>{item.nextDue ?? '-'}</td>
                     <td style={{ padding: '10px 14px' }}>
                       <span style={{
                         padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 600,
@@ -205,7 +199,7 @@ function DetailTable({ items }: { items: DashboardData['nearDueItems'] }) {
 
 /* ── Status section card ── */
 function StatusSection({ title, subtitle, icon, accentColor, data, items, isDanger }: {
-  title: string; subtitle: string; icon: string; accentColor: string
+  title: string; subtitle: string; icon: React.ReactNode; accentColor: string
   data: DashboardData['nearDue'] | DashboardData['alreadyDue']
   items: DashboardData['nearDueItems']
   isDanger: boolean
@@ -221,15 +215,20 @@ function StatusSection({ title, subtitle, icon, accentColor, data, items, isDang
     }}>
       {/* Header */}
       <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${COLORS.border}`, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <span style={{ fontSize: 24 }}>{icon}</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: accentColor }}>
+          {icon}
+        </div>
         <div>
           <h2 style={{ fontSize: 17, fontWeight: 700, color: COLORS.text }}>{title}</h2>
           <p style={{ fontSize: 13, color: COLORS.muted, marginTop: 2 }}>{subtitle}</p>
         </div>
       </div>
       {/* Body */}
-      <div style={{ padding: '20px 24px' }}>
-        <AirlinePanel data={data} isDanger={isDanger} />
+      <div style={{ padding: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32, marginBottom: 20 }}>
+          <AirlineColumn name="Garuda Indonesia" badge="GA" color={COLORS.gaColor} items={items.filter(i => i.aircraft?.airline === 'GA')} isDanger={isDanger} types={GA_TYPES} />
+          <AirlineColumn name="Citilink" badge="QG" color={COLORS.qgColor} items={items.filter(i => i.aircraft?.airline === 'QG')} isDanger={isDanger} types={QG_TYPES} />
+        </div>
         <DetailTable items={items} />
       </div>
     </div>
@@ -238,7 +237,7 @@ function StatusSection({ title, subtitle, icon, accentColor, data, items, isDang
 
 /* ── Summary card ── */
 function SummaryCard({ label, value, icon, bg, numColor, sub }: {
-  label: string; value: number; icon: string; bg: string; numColor: string; sub?: string
+  label: string; value: number; icon: React.ReactNode; bg: string; numColor: string; sub?: string
 }) {
   return (
     <div style={{
@@ -246,13 +245,20 @@ function SummaryCard({ label, value, icon, bg, numColor, sub }: {
       border: `1px solid ${COLORS.border}`,
       boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
       padding: '20px 24px',
-      display: 'flex', alignItems: 'center', gap: 16,
+      display: 'flex', flexDirection: 'column', gap: 12,
     }}>
-      <span style={{ fontSize: 32 }}>{icon}</span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: COLORS.text }}>{label}</div>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: numColor, padding: 8, borderRadius: 10, background: 'rgba(255,255,255,0.5)'
+        }}>
+          {icon}
+        </div>
+      </div>
       <div>
         <div style={{ fontSize: 40, fontWeight: 800, color: numColor, lineHeight: 1 }}>{value}</div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: COLORS.text, marginTop: 4 }}>{label}</div>
-        {sub && <div style={{ fontSize: 12, color: COLORS.muted, marginTop: 2 }}>{sub}</div>}
+        {sub && <div style={{ fontSize: 12, color: COLORS.muted, marginTop: 6 }}>{sub}</div>}
       </div>
     </div>
   )
@@ -309,9 +315,11 @@ export default function Dashboard() {
               width: 38, height: 38, borderRadius: 10,
               background: COLORS.blue,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', fontSize: 18, fontWeight: 700,
+              color: '#fff',
               boxShadow: '0 2px 8px rgba(79,70,229,0.3)',
-            }}>✈</div>
+            }}>
+              <Plane size={20} strokeWidth={2.5} />
+            </div>
             <div>
               <h1 style={{ fontSize: 16, fontWeight: 700, color: COLORS.text, lineHeight: 1.2 }}>LDND Carpet Monitor</h1>
               <p style={{ fontSize: 12, color: COLORS.muted }}>Last Done / Next Due Tracking</p>
@@ -322,8 +330,10 @@ export default function Dashboard() {
               <p style={{ fontSize: 14, fontWeight: 600, color: COLORS.text }}>{formatDate(new Date())}</p>
               <p style={{ fontSize: 12, color: COLORS.muted }}>Data real-time</p>
             </div>
-            <Link href="/" style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: COLORS.blue, textDecoration: 'none', background: COLORS.blueLight, border: `1px solid ${COLORS.blueBorder}` }}>📊 Dashboard</Link>
-            <Link href="/data" style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: COLORS.muted, textDecoration: 'none', border: `1px solid ${COLORS.border}` }}>📋 Data</Link>
+            <Link href="/data" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: COLORS.blue, textDecoration: 'none', background: COLORS.blueLight, border: `1px solid ${COLORS.blueBorder}` }}>
+              <Database size={16} strokeWidth={2.5} />
+              Kelola Data
+            </Link>
           </div>
         </div>
       </header>
@@ -332,26 +342,26 @@ export default function Dashboard() {
       <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
         {/* Summary */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 24 }} className="fade-up">
-          <SummaryCard label="Total Pesawat" value={data.totalAircraft} icon="✈️" bg={COLORS.surface} numColor={COLORS.blue} />
-          <SummaryCard label="Already Due" value={data.totalAlreadyDue} icon="🚨" bg={COLORS.dangerLight} numColor={COLORS.danger} sub="melewati jadwal penggantian" />
-          <SummaryCard label="Near Due" value={data.totalNearDue} icon="⏰" bg={COLORS.warningLight} numColor={COLORS.warning} sub="dalam 30 hari ke depan" />
-        </div>
-
-        {/* Already Due */}
-        <div style={{ marginBottom: 20 }} className="fade-up delay-1">
-          <StatusSection
-            title="Already Due" subtitle="Carpet yang sudah melewati jadwal penggantian"
-            icon="🚨" accentColor={COLORS.danger}
-            data={data.alreadyDue} items={data.alreadyDueItems} isDanger={true}
-          />
+          <SummaryCard label="Total Pesawat" value={data.totalAircraft} icon={<Plane size={24} strokeWidth={2.5} />} bg={COLORS.surface} numColor={COLORS.blue} />
+          <SummaryCard label="Already Due" value={data.totalAlreadyDue} icon={<AlertTriangle size={24} strokeWidth={2.5} />} bg={COLORS.dangerLight} numColor={COLORS.danger} sub="melewati jadwal penggantian" />
+          <SummaryCard label="Near Due" value={data.totalNearDue} icon={<Clock size={24} strokeWidth={2.5} />} bg={COLORS.warningLight} numColor={COLORS.warning} sub="dalam 30 hari ke depan" />
         </div>
 
         {/* Near Due */}
-        <div className="fade-up delay-2">
+        <div style={{ marginBottom: 24 }} className="fade-up delay-1">
           <StatusSection
             title="Near Due" subtitle="Carpet yang mendekati jadwal penggantian (dalam 30 hari)"
-            icon="⏰" accentColor={COLORS.warning}
+            icon={<Clock size={24} strokeWidth={2.5} />} accentColor={COLORS.warning}
             data={data.nearDue} items={data.nearDueItems} isDanger={false}
+          />
+        </div>
+
+        {/* Already Due */}
+        <div className="fade-up delay-2">
+          <StatusSection
+            title="Already Due" subtitle="Carpet yang sudah melewati jadwal penggantian"
+            icon={<AlertTriangle size={24} strokeWidth={2.5} />} accentColor={COLORS.danger}
+            data={data.alreadyDue} items={data.alreadyDueItems} isDanger={true}
           />
         </div>
       </main>
