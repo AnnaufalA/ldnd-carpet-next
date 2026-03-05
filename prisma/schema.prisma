@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// Aircraft Master Table
+// ============================================
+model Aircraft {
+  id          String   @id @default(uuid()) @db.Uuid
+  acType      String   @map("ac_type") @db.VarChar(20)       // e.g. 'B737-800', 'A330-300'
+  acTypeGroup String   @map("ac_type_group") @db.VarChar(10) // e.g. 'B737', 'A320', 'A330', 'B777'
+  registration String  @unique @db.VarChar(10)                // e.g. 'PK-GDC'
+  airline     String   @db.VarChar(5)                         // 'GA' or 'QG'
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  carpetItems CarpetItem[]
+
+  @@map("aircraft")
+}
+
+// ============================================
+// Carpet Items (one per aircraft per carpet type)
+// ============================================
+model CarpetItem {
+  id             String   @id @default(uuid()) @db.Uuid
+  aircraftId     String   @map("aircraft_id") @db.Uuid
+  carpetType     String   @map("carpet_type") @db.VarChar(15) // 'Aisle' or 'Underseat'
+  intervalMonths Int      @map("interval_months")
+  lastDone       DateTime? @map("last_done") @db.Date
+  nextDue        DateTime? @map("next_due") @db.Date
+  remark         String?  @db.Text
+  vendor         String?  @db.VarChar(50)
+  coatroom       String?  @db.VarChar(50)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  aircraft       Aircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+  replacementHistory ReplacementHistory[]
+
+  @@unique([aircraftId, carpetType])
+  @@index([aircraftId])
+  @@index([nextDue])
+  @@map("carpet_items")
+}
+
+// ============================================
+// Replacement History (each past replacement)
+// ============================================
+model ReplacementHistory {
+  id           String   @id @default(uuid()) @db.Uuid
+  carpetItemId String   @map("carpet_item_id") @db.Uuid
+  doneNumber   Int      @map("done_number")
+  doneDate     DateTime @map("done_date") @db.Date
+  isPremature  Boolean  @default(false) @map("is_premature")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  carpetItem   CarpetItem @relation(fields: [carpetItemId], references: [id], onDelete: Cascade)
+
+  @@index([carpetItemId])
+  @@map("replacement_history")
+}
