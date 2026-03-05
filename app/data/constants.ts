@@ -11,7 +11,7 @@ export const C = {
 }
 
 export const AC_TYPES: Record<string, string[]> = {
-    GA: ['B737-800', 'A330-200', 'A330-300', 'A330-900', 'B777-300'],
+    GA: ['B737-800', 'B737 MAX 8', 'A330-200', 'A330-300', 'A330-900', 'B777-300'],
     QG: ['A320', 'ATR'],
 }
 

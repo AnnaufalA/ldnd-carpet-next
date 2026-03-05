@@ -29,7 +29,7 @@ export const COLORS = {
     qgLight: '#f0fdf4',
 }
 
-export const GA_TYPES = ['B737-800', 'B777-300', 'A330-200', 'A330-300', 'A330-900']
+export const GA_TYPES = ['B737-800', 'B737 MAX 8', 'B777-300', 'A330-200', 'A330-300', 'A330-900']
 export const QG_TYPES = ['A320', 'ATR']
 
 export function formatDate(d: Date) {
