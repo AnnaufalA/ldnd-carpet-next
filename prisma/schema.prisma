@@ -66,3 +66,17 @@ model ReplacementHistory {
   @@index([carpetItemId])
   @@map("replacement_history")
 }
+
+// ============================================
+// Rawmat Quantity (manual planner input)
+// ============================================
+model RawmatQty {
+  id        String   @id @default(uuid()) @db.Uuid
+  airline   String   @unique @db.VarChar(5) // 'GA' or 'QG'
+  qty       Float    @default(0)
+  unit      String   @default("YD") @db.VarChar(10)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("rawmat_qty")
+}

@@ -16,6 +16,7 @@ export default function DataPage() {
     const [tab, setTab] = useState<'GA' | 'QG'>('GA')
     const [showAdd, setShowAdd] = useState(false)
     const [search, setSearch] = useState('')
+    const [typeFilter, setTypeFilter] = useState('Semua')
 
     const fetchData = useCallback(() => {
         setLoading(true)
@@ -26,6 +27,7 @@ export default function DataPage() {
 
     const filtered = aircraft
         .filter(ac => ac.airline === tab)
+        .filter(ac => typeFilter === 'Semua' || ac.acTypeGroup.includes(typeFilter))
         .filter(ac => !search || ac.registration.toLowerCase().includes(search.toLowerCase()) || ac.acType.toLowerCase().includes(search.toLowerCase()))
 
     const gaCount = aircraft.filter(a => a.airline === 'GA').length
@@ -86,7 +88,18 @@ export default function DataPage() {
                         ))}
                     </div>
 
-                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                        {/* Type filter chips */}
+                        <div style={{ display: 'flex', gap: 4 }}>
+                            {['Semua', ...Array.from(new Set(aircraft.filter(a => a.airline === tab).map(a => a.acTypeGroup)))].map(t => (
+                                <button key={t} onClick={() => setTypeFilter(t)} style={{
+                                    padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                                    border: typeFilter === t ? `2px solid ${C.blue}` : `1px solid ${C.border}`,
+                                    background: typeFilter === t ? C.blueLight : C.surface,
+                                    color: typeFilter === t ? C.blue : C.muted,
+                                }}>{t === 'Semua' ? 'Semua' : t}</button>
+                            ))}
+                        </div>
                         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Cari registrasi..."
                             style={{ padding: '9px 14px', borderRadius: 10, border: `1px solid ${C.border}`, fontSize: 13, color: C.text, width: 200, outline: 'none' }} />
                         <button onClick={() => setShowAdd(true)} style={{

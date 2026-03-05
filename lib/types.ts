@@ -62,6 +62,18 @@ export interface DashboardData {
     totalAircraft: number
     totalNearDue: number
     totalAlreadyDue: number
+    prematureCounts: PrematureCounts
+    rawmatQty: RawmatQtyData
+}
+
+export interface PrematureCounts {
+    aisle: TypeCount
+    underseat: TypeCount
+}
+
+export interface RawmatQtyData {
+    GA: { qty: number; unit: string }
+    QG: { qty: number; unit: string }
 }
 
 export const INTERVALS: Record<string, Record<string, number>> = {

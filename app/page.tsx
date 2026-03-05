@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Plane, AlertTriangle, Clock, LayoutDashboard, Database } from 'lucide-react'
-import type { DashboardData, TypeCount } from '@/lib/types'
+import { Plane, AlertTriangle, Clock, LayoutDashboard, Database, Zap, Package } from 'lucide-react'
+import type { DashboardData, TypeCount, PrematureCounts } from '@/lib/types'
 
 const AC_TYPES = ['B737', 'A320', 'A330', 'B777'] as const
 
@@ -80,10 +80,10 @@ function TypeRow({ type, count, isDanger }: { type: string; count: number; isDan
 }
 
 /* ── Airline Column (GA / QG) ── */
-function AirlineColumn({ name, badge, color, items, isDanger, types }: {
+function AirlineColumn({ name, badge, color, items, isDanger, types, showUnderseat = true }: {
   name: string; badge: string; color: string;
   items: DashboardData['nearDueItems']
-  isDanger: boolean; types: string[]
+  isDanger: boolean; types: string[]; showUnderseat?: boolean
 }) {
   return (
     <div style={{ background: '#f8fafc', borderRadius: 12, padding: 20, border: `1px solid ${COLORS.border}` }}>
@@ -92,8 +92,8 @@ function AirlineColumn({ name, badge, color, items, isDanger, types }: {
         <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 99, background: COLORS.border, color: COLORS.muted, fontWeight: 700 }}>{badge}</span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 16 }}>
-        {/* Aisle Left */}
+      <div style={{ display: 'grid', gridTemplateColumns: showUnderseat ? 'minmax(0, 1fr) minmax(0, 1fr)' : '1fr', gap: 16 }}>
+        {/* Aisle */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: COLORS.blue }} />
@@ -107,19 +107,21 @@ function AirlineColumn({ name, badge, color, items, isDanger, types }: {
           </div>
         </div>
 
-        {/* Underseat Right */}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: COLORS.green }} />
-            <span style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>Underseat</span>
+        {/* Underseat */}
+        {showUnderseat && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: COLORS.green }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>Underseat</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {types.map(t => {
+                const count = items.filter(i => i.carpetType === 'Underseat' && i.aircraft?.acType === t).length
+                return <TypeRow key={t} type={t} count={count} isDanger={isDanger} />
+              })}
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {types.map(t => {
-              const count = items.filter(i => i.carpetType === 'Underseat' && i.aircraft?.acType === t).length
-              return <TypeRow key={t} type={t} count={count} isDanger={isDanger} />
-            })}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )
@@ -227,7 +229,7 @@ function StatusSection({ title, subtitle, icon, accentColor, data, items, isDang
       <div style={{ padding: '24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32, marginBottom: 20 }}>
           <AirlineColumn name="Garuda Indonesia" badge="GA" color={COLORS.gaColor} items={items.filter(i => i.aircraft?.airline === 'GA')} isDanger={isDanger} types={GA_TYPES} />
-          <AirlineColumn name="Citilink" badge="QG" color={COLORS.qgColor} items={items.filter(i => i.aircraft?.airline === 'QG')} isDanger={isDanger} types={QG_TYPES} />
+          <AirlineColumn name="Citilink" badge="QG" color={COLORS.qgColor} items={items.filter(i => i.aircraft?.airline === 'QG')} isDanger={isDanger} types={QG_TYPES} showUnderseat={false} />
         </div>
         <DetailTable items={items} />
       </div>
@@ -260,6 +262,124 @@ function SummaryCard({ label, value, icon, bg, numColor, sub }: {
         <div style={{ fontSize: 40, fontWeight: 800, color: numColor, lineHeight: 1 }}>{value}</div>
         {sub && <div style={{ fontSize: 12, color: COLORS.muted, marginTop: 6 }}>{sub}</div>}
       </div>
+    </div>
+  )
+}
+
+/* ── Rawmat Quantity Section ── */
+function RawmatSection({ rawmatQty, onUpdate }: {
+  rawmatQty: DashboardData['rawmatQty']
+  onUpdate: (airline: string, qty: number, unit: string) => void
+}) {
+  const [gaQty, setGaQty] = useState(String(rawmatQty.GA.qty))
+  const [gaUnit, setGaUnit] = useState(rawmatQty.GA.unit)
+  const [qgQty, setQgQty] = useState(String(rawmatQty.QG.qty))
+  const [qgUnit, setQgUnit] = useState(rawmatQty.QG.unit)
+
+  function handleSave(airline: 'GA' | 'QG') {
+    const qty = parseFloat(airline === 'GA' ? gaQty : qgQty) || 0
+    const unit = airline === 'GA' ? gaUnit : qgUnit
+    onUpdate(airline, qty, unit)
+  }
+
+  const inputS: React.CSSProperties = {
+    padding: '8px 12px', borderRadius: 8, border: `1px solid ${COLORS.border}`,
+    fontSize: 14, fontWeight: 700, color: COLORS.text, outline: 'none', width: 80, textAlign: 'center',
+  }
+  const unitS: React.CSSProperties = {
+    padding: '8px 10px', borderRadius: 8, border: `1px solid ${COLORS.border}`,
+    fontSize: 13, color: COLORS.text, outline: 'none', width: 60,
+  }
+  const saveS: React.CSSProperties = {
+    padding: '8px 14px', borderRadius: 8, border: 'none',
+    background: COLORS.blue, color: '#fff', fontSize: 12, fontWeight: 700,
+    cursor: 'pointer', boxShadow: '0 2px 6px rgba(79,70,229,0.2)',
+  }
+
+  return (
+    <div style={{ background: COLORS.surface, borderRadius: 16, border: `1px solid ${COLORS.border}`, padding: 24, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: COLORS.blueLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.blue }}>
+          <Package size={20} strokeWidth={2.5} />
+        </div>
+        <div>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.text }}>QTY Rawmat</h3>
+          <p style={{ fontSize: 12, color: COLORS.muted }}>Input manual oleh planner</p>
+        </div>
+      </div>
+
+      {/* GA */}
+      <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 12, padding: 16, marginBottom: 12 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.gaColor, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Plane size={14} /> Garuda Indonesia (GA)
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <input value={gaQty} onChange={e => setGaQty(e.target.value)} style={inputS} placeholder="0" />
+          <input value={gaUnit} onChange={e => setGaUnit(e.target.value.toUpperCase())} style={unitS} placeholder="YD" />
+          <button onClick={() => handleSave('GA')} style={saveS}>Simpan</button>
+        </div>
+      </div>
+
+      {/* QG */}
+      <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: 16 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.qgColor, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Plane size={14} /> Citilink (QG)
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <input value={qgQty} onChange={e => setQgQty(e.target.value)} style={inputS} placeholder="0" />
+          <input value={qgUnit} onChange={e => setQgUnit(e.target.value.toUpperCase())} style={unitS} placeholder="YD" />
+          <button onClick={() => handleSave('QG')} style={saveS}>Simpan</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ── Premature Replacement Section ── */
+function PrematureSection({ prematureCounts }: { prematureCounts: PrematureCounts }) {
+  const types = ['B737', 'A320', 'A330', 'B777', 'ATR'] as const
+  const totalAisle = types.reduce((s, t) => s + prematureCounts.aisle[t], 0)
+  const totalUnderseat = types.reduce((s, t) => s + prematureCounts.underseat[t], 0)
+
+  return (
+    <div style={{ background: COLORS.surface, borderRadius: 16, border: `1px solid ${COLORS.border}`, padding: 24, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ea580c' }}>
+          <Zap size={20} strokeWidth={2.5} />
+        </div>
+        <div>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.text }}>Premature Replacement</h3>
+          <p style={{ fontSize: 12, color: COLORS.muted }}>Jumlah penggantian prematur per tipe</p>
+        </div>
+      </div>
+
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+        <thead>
+          <tr>
+            <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: COLORS.muted, textTransform: 'uppercase', borderBottom: `2px solid ${COLORS.border}`, letterSpacing: '0.05em' }}>Type</th>
+            <th style={{ padding: '10px 12px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: COLORS.muted, textTransform: 'uppercase', borderBottom: `2px solid ${COLORS.border}`, letterSpacing: '0.05em' }}>Aisle</th>
+            <th style={{ padding: '10px 12px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: COLORS.muted, textTransform: 'uppercase', borderBottom: `2px solid ${COLORS.border}`, letterSpacing: '0.05em' }}>Underseat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {types.map(t => {
+            const a = prematureCounts.aisle[t]
+            const u = prematureCounts.underseat[t]
+            return (
+              <tr key={t} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                <td style={{ padding: '10px 12px', fontWeight: 700, fontFamily: 'monospace', color: COLORS.text }}>{t}</td>
+                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: a > 0 ? '#ea580c' : COLORS.light }}>{a > 0 ? `${a} EA` : '—'}</td>
+                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: u > 0 ? '#ea580c' : COLORS.light }}>{u > 0 ? `${u} EA` : '—'}</td>
+              </tr>
+            )
+          })}
+          <tr style={{ background: '#f8fafc' }}>
+            <td style={{ padding: '10px 12px', fontWeight: 800, color: COLORS.text }}>Total</td>
+            <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: totalAisle > 0 ? '#ea580c' : COLORS.light }}>{totalAisle > 0 ? `${totalAisle} EA` : '—'}</td>
+            <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: totalUnderseat > 0 ? '#ea580c' : COLORS.light }}>{totalUnderseat > 0 ? `${totalUnderseat} EA` : '—'}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -363,6 +483,26 @@ export default function Dashboard() {
             icon={<AlertTriangle size={24} strokeWidth={2.5} />} accentColor={COLORS.danger}
             data={data.alreadyDue} items={data.alreadyDueItems} isDanger={true}
           />
+        </div>
+
+        {/* QTY Rawmat + Premature Replacement */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 24 }} className="fade-up delay-2">
+          {/* LEFT: QTY Rawmat */}
+          <RawmatSection rawmatQty={data.rawmatQty} onUpdate={(airline, qty, unit) => {
+            fetch('/api/rawmat', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ airline, qty, unit }),
+            }).then(() => {
+              setData(prev => prev ? {
+                ...prev,
+                rawmatQty: { ...prev.rawmatQty, [airline]: { qty, unit } }
+              } : prev)
+            })
+          }} />
+
+          {/* RIGHT: Premature Replacement */}
+          <PrematureSection prematureCounts={data.prematureCounts} />
         </div>
       </main>
 
