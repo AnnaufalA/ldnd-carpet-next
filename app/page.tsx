@@ -116,18 +116,7 @@ export default function Dashboard() {
 
         {/* QTY Rawmat + Premature Replacement */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 24 }} className="fade-up delay-2">
-          <RawmatSection rawmatQty={data.rawmatQty} onUpdate={(airline, qty, unit) => {
-            fetch('/api/rawmat', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ airline, qty, unit }),
-            }).then(() => {
-              setData(prev => prev ? {
-                ...prev,
-                rawmatQty: { ...prev.rawmatQty, [airline]: { qty, unit } }
-              } : prev)
-            })
-          }} />
+          <RawmatSection rawmatQty={data.rawmatQty} />
 
           <PrematureSection prematureCounts={data.prematureCounts} />
         </div>

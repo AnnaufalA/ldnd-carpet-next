@@ -2,13 +2,14 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Plane, AlertTriangle, Plus, Trash2, LayoutDashboard, Database, Settings } from 'lucide-react'
+import { Plane, AlertTriangle, Plus, Trash2, LayoutDashboard, Database, Settings, Package } from 'lucide-react'
 
 import { C } from './constants'
 import { AircraftData } from './types'
 import { AircraftCarpetRows } from './components/AircraftCarpetRows'
 import { AddAircraftModal } from './components/Modals'
 import { IntervalSettingsModal } from './components/IntervalSettingsModal'
+import { RawmatModal } from './components/RawmatModal'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 /* ───────────── Main Data Page ───────────── */
@@ -18,6 +19,7 @@ export default function DataPage() {
     const [tab, setTab] = useState<'GA' | 'QG'>('GA')
     const [showAdd, setShowAdd] = useState(false)
     const [showIntervalSettings, setShowIntervalSettings] = useState(false)
+    const [showRawmat, setShowRawmat] = useState(false)
     const [search, setSearch] = useState('')
     const [typeFilter, setTypeFilter] = useState('Semua')
 
@@ -106,6 +108,13 @@ export default function DataPage() {
                         </div>
                         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Cari registrasi..."
                             style={{ padding: '9px 14px', borderRadius: 10, border: `1px solid ${C.border}`, fontSize: 13, color: C.text, width: 200, outline: 'none' }} />
+                        <button onClick={() => setShowRawmat(true)} style={{
+                            padding: '10px 14px', borderRadius: 10, border: `1px solid ${C.border}`,
+                            background: C.surface, color: C.text, fontSize: 13, fontWeight: 600,
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+                        }}>
+                            <Package size={16} /> Rawmat
+                        </button>
                         <button onClick={() => setShowIntervalSettings(true)} style={{
                             padding: '10px 14px', borderRadius: 10, border: `1px solid ${C.border}`,
                             background: C.surface, color: C.text, fontSize: 13, fontWeight: 600,
@@ -159,6 +168,7 @@ export default function DataPage() {
                 )}
                 {showAdd && <AddAircraftModal airline={tab} onClose={() => setShowAdd(false)} onSaved={fetchData} />}
                 {showIntervalSettings && <IntervalSettingsModal onClose={() => setShowIntervalSettings(false)} onRefresh={fetchData} />}
+                {showRawmat && <RawmatModal onClose={() => setShowRawmat(false)} onSaved={() => {/* Add subtle notification logic if needed */ }} />}
             </main>
         </div>
     )
