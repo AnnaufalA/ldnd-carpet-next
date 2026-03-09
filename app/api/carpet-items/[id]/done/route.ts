@@ -31,8 +31,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         // Check if premature (replaced before next due date)
         const doneDateObj = new Date(doneDate)
         let isPremature = false
-        if (carpetItem.nextDue && doneDateObj < carpetItem.nextDue) {
-            isPremature = true
+        if (carpetItem.nextDue) {
+            const threshold = new Date(carpetItem.nextDue)
+            threshold.setDate(threshold.getDate() - 10) // 10-day grace period
+            if (doneDateObj < threshold) {
+                isPremature = true
+            }
         }
 
         // Calculate new next due date: doneDate + intervalMonths

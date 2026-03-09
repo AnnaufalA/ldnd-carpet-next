@@ -127,7 +127,14 @@ export function AddDoneModal({ carpetItem, registration, onClose, onSaved }: {
         } catch { setError('Gagal menyimpan'); setSaving(false) }
     }
 
-    const isPremature = carpetItem.nextDue && new Date(date) < new Date(carpetItem.nextDue)
+    let isPremature = false
+    if (carpetItem.nextDue) {
+        const threshold = new Date(carpetItem.nextDue)
+        threshold.setDate(threshold.getDate() - 10)
+        if (new Date(date) < threshold) {
+            isPremature = true
+        }
+    }
 
     return (
         <Overlay onClose={onClose}>
