@@ -62,8 +62,8 @@ export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved
                     <Package size={20} />
                 </div>
                 <div>
-                    <h2 style={{ fontSize: 18, fontWeight: 800, color: C.text }}>Input Stok Rawmat</h2>
-                    <p style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>Ubah jumlah sisa material karpet di gudang.</p>
+                    <h2 style={{ fontSize: 18, fontWeight: 800, color: C.text }}>Input QYT Rawmat</h2>
+                    <p style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>Jumlah QYT Rawmat Tersedia.</p>
                 </div>
             </div>
 
