@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Plane, AlertTriangle, Clock, Database } from 'lucide-react'
 import type { DashboardData } from '@/lib/types'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 import { COLORS, formatDate } from './dashboard/constants'
 import StatusSection from './dashboard/components/StatusSection'
@@ -77,6 +78,7 @@ export default function Dashboard() {
               <p style={{ fontSize: 14, fontWeight: 600, color: COLORS.text }}>{formatDate(new Date())}</p>
               <p style={{ fontSize: 12, color: COLORS.muted }}>Data real-time</p>
             </div>
+            <ThemeToggle />
             <Link href="/data" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: COLORS.blue, textDecoration: 'none', background: COLORS.blueLight, border: `1px solid ${COLORS.blueBorder}` }}>
               <Database size={16} strokeWidth={2.5} />
               Kelola Data

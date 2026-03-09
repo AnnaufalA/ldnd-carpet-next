@@ -150,7 +150,7 @@ export function AddDoneModal({ carpetItem, registration, onClose, onSaved }: {
                     <input type="date" value={date} onChange={e => setDate(e.target.value)} style={inputStyle} />
                 </Field>
                 {isPremature && (
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, background: C.warningLight, border: '1px solid #fcd34d', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: C.warning }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, background: C.warningLight, border: `1px solid ${C.warningBorder}`, borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: C.warning }}>
                         <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: 2 }} />
                         <div>
                             Sebelum Next Due ({fmtDate(carpetItem.nextDue)}) — ditandai <strong>prematur</strong>

@@ -46,13 +46,13 @@ function CarpetRow({ item, ac, isFirst, isLast, rowSpan, onRefresh }: { item: Ca
     const overdue = days !== null && days <= 0
     const nearDue = days !== null && days > 0 && days <= 30
 
-    let statusBg = '#ecfdf5', statusColor = C.green, statusBorder = '#a7f3d0', statusText = 'SAFE'
-    if (overdue) { statusBg = C.dangerLight; statusColor = C.danger; statusBorder = '#fca5a5'; statusText = 'OVERDUE' }
-    else if (nearDue) { statusBg = C.warningLight; statusColor = C.warning; statusBorder = '#fcd34d'; statusText = 'NEAR DUE' }
+    let statusBg = C.greenLight, statusColor = C.green, statusBorder = C.greenBorder, statusText = 'SAFE'
+    if (overdue) { statusBg = C.dangerLight; statusColor = C.danger; statusBorder = C.dangerBorder; statusText = 'OVERDUE' }
+    else if (nearDue) { statusBg = C.warningLight; statusColor = C.warning; statusBorder = C.warningBorder; statusText = 'NEAR DUE' }
 
     return (
         <>
-            <tr style={{ background: overdue ? '#fef2f2' : nearDue ? '#fefce8' : C.surface, borderBottom: isLast ? `5px solid #cbd5e1` : `1px solid ${C.border}`, transition: 'background 0.2s', fontSize: 13 }}>
+            <tr style={{ background: overdue ? C.dangerLight : nearDue ? C.warningLight : C.surface, borderBottom: isLast ? `5px solid ${C.border}` : `1px solid ${C.border}`, transition: 'background 0.2s', fontSize: 13 }}>
                 {isFirst && (
                     <td rowSpan={rowSpan} style={{ padding: '24px 20px', borderRight: `1px solid ${C.border}`, verticalAlign: 'middle', background: C.surface, width: 160 }}>
                         <div style={{ fontWeight: 800, fontSize: 16, fontFamily: 'monospace', color: C.text }}>{ac.registration}</div>
@@ -125,7 +125,7 @@ function CarpetRow({ item, ac, isFirst, isLast, rowSpan, onRefresh }: { item: Ca
                         {item.replacementHistory.map(h => (
                             <div key={h.id} style={{
                                 background: h.isPremature ? C.warningLight : C.surface,
-                                border: `1px solid ${h.isPremature ? '#fcd34d' : C.border}`,
+                                border: `1px solid ${h.isPremature ? C.warningBorder : C.border}`,
                                 borderRadius: 8, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                             }}>
                                 <div>

@@ -46,7 +46,7 @@ function AirlineColumn({ name, badge, color, items, isDanger, types, showUnderse
     isDanger: boolean; types: string[]; showUnderseat?: boolean
 }) {
     return (
-        <div style={{ background: '#f8fafc', borderRadius: 12, padding: 20, border: `1px solid ${COLORS.border}` }}>
+        <div style={{ background: COLORS.borderLight, borderRadius: 12, padding: 20, border: `1px solid ${COLORS.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, borderBottom: `2px solid ${COLORS.border}`, paddingBottom: 12 }}>
                 <span style={{ fontWeight: 800, fontSize: 15, color }}>{name}</span>
                 <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 99, background: COLORS.border, color: COLORS.muted, fontWeight: 700 }}>{badge}</span>
@@ -114,7 +114,7 @@ function DetailTable({ items }: { items: DashboardData['nearDueItems'] }) {
                 <div style={{ marginTop: 12, borderRadius: 12, border: `1px solid ${COLORS.border}`, overflow: 'hidden' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                         <thead>
-                            <tr style={{ background: '#f8fafc', borderBottom: `1px solid ${COLORS.border}` }}>
+                            <tr style={{ background: COLORS.borderLight, borderBottom: `1px solid ${COLORS.border}` }}>
                                 {['Registrasi', 'Tipe A/C', 'Carpet', 'Last Done', 'Next Due', 'Status'].map(h => (
                                     <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, fontWeight: 700, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
                                 ))}
@@ -127,7 +127,7 @@ function DetailTable({ items }: { items: DashboardData['nearDueItems'] }) {
                                     : 0
                                 const overdue = days <= 0
                                 return (
-                                    <tr key={item.id} style={{ background: i % 2 === 0 ? COLORS.surface : '#f8fafc', borderBottom: i < sorted.length - 1 ? `1px solid ${COLORS.border}` : 'none' }}>
+                                    <tr key={item.id} style={{ background: i % 2 === 0 ? COLORS.surface : COLORS.borderLight, borderBottom: i < sorted.length - 1 ? `1px solid ${COLORS.border}` : 'none' }}>
                                         <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontWeight: 700, color: COLORS.text }}>{item.aircraft?.registration}</td>
                                         <td style={{ padding: '10px 14px', color: COLORS.muted }}>{item.aircraft?.acType}</td>
                                         <td style={{ padding: '10px 14px' }}>

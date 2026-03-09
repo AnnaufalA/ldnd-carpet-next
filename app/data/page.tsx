@@ -8,6 +8,7 @@ import { C } from './constants'
 import { AircraftData } from './types'
 import { AircraftCarpetRows } from './components/AircraftCarpetRows'
 import { AddAircraftModal } from './components/Modals'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 /* ───────────── Main Data Page ───────────── */
 export default function DataPage() {
@@ -54,7 +55,8 @@ export default function DataPage() {
                             <p style={{ fontSize: 12, color: C.muted }}>Data Management</p>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <ThemeToggle />
                         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: C.blue, textDecoration: 'none', background: C.blueLight, border: `1px solid ${C.blueBorder}` }}>
                             <LayoutDashboard size={16} strokeWidth={2.5} />
                             Ke Dashboard
@@ -128,16 +130,16 @@ export default function DataPage() {
                         <table style={{ width: '100%', minWidth: 900, borderCollapse: 'collapse', textAlign: 'left' }}>
                             <thead>
                                 <tr>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '12%' }}>Pesawat</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Tipe Carpet</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Status</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '12%' }}>Last Done</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '12%' }}>Next Due</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Vendor</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Coatroom</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '11%' }}>Remark</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '8%' }}>Riwayat</th>
-                                    <th style={{ background: '#f8fafc', padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '5%', textAlign: 'right' }}>Aksi</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '12%' }}>Pesawat</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Tipe Carpet</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Status</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '12%' }}>Last Done</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '12%' }}>Next Due</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Vendor</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '10%' }}>Coatroom</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '11%' }}>Remark</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '8%' }}>Riwayat</th>
+                                    <th style={{ background: C.borderLight, padding: '14px 16px', fontSize: 11, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: `1px solid ${C.border}`, width: '5%', textAlign: 'right' }}>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>

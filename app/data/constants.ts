@@ -1,13 +1,13 @@
 export const C = {
-    bg: '#f1f5f9', surface: '#ffffff', border: '#e2e8f0', borderLight: '#f1f5f9',
-    text: '#0f172a', muted: '#64748b', light: '#94a3b8',
-    blue: '#4f46e5', blueLight: '#ede9fe', blueBorder: '#c4b5fd',
-    danger: '#dc2626', dangerLight: '#fef2f2', dangerBorder: '#fca5a5',
-    warning: '#b45309', warningLight: '#fffbeb',
-    green: '#059669', greenLight: '#ecfdf5', greenBorder: '#86efac',
-    gaColor: '#0369a1', gaLight: '#e0f2fe',
-    qgColor: '#15803d', qgLight: '#f0fdf4',
-    orange: '#ea580c', orangeLight: '#fff7ed',
+    bg: 'var(--color-bg)', surface: 'var(--color-surface)', border: 'var(--color-border)', borderLight: 'var(--color-borderLight)',
+    text: 'var(--color-text)', muted: 'var(--color-muted)', light: 'var(--color-light)',
+    blue: 'var(--color-blue)', blueLight: 'var(--color-blueLight)', blueBorder: 'var(--color-blueBorder)',
+    danger: 'var(--color-danger)', dangerLight: 'var(--color-dangerLight)', dangerBorder: 'var(--color-dangerBorder)', dangerDark: 'var(--color-dangerDark)',
+    warning: 'var(--color-warning)', warningLight: 'var(--color-warningLight)', warningBorder: 'var(--color-warningBorder)', warningDark: 'var(--color-warningDark)',
+    green: 'var(--color-green)', greenLight: 'var(--color-greenLight)', greenBorder: 'var(--color-greenBorder)',
+    gaColor: 'var(--color-ga)', gaLight: 'var(--color-gaLight)',
+    qgColor: 'var(--color-qg)', qgLight: 'var(--color-qgLight)',
+    orange: 'var(--color-orange)', orangeLight: 'var(--color-orangeLight)',
 }
 
 export const AC_TYPES: Record<string, string[]> = {

@@ -47,25 +47,25 @@ export default function RawmatSection({ rawmatQty, onUpdate }: {
             </div>
 
             {/* GA */}
-            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 12, padding: 16, marginBottom: 12 }}>
+            <div style={{ background: COLORS.gaLight, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16, marginBottom: 12 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.gaColor, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Plane size={14} /> Garuda Indonesia (GA)
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <input value={gaQty} onChange={e => setGaQty(e.target.value)} style={inputS} placeholder="0" />
-                    <input value={gaUnit} onChange={e => setGaUnit(e.target.value.toUpperCase())} style={unitS} placeholder="YD" />
+                    <input value={gaQty} onChange={e => setGaQty(e.target.value)} style={{ ...inputS, background: COLORS.surface }} placeholder="0" />
+                    <input value={gaUnit} onChange={e => setGaUnit(e.target.value.toUpperCase())} style={{ ...unitS, background: COLORS.surface }} placeholder="YD" />
                     <button onClick={() => handleSave('GA')} style={saveS}>Simpan</button>
                 </div>
             </div>
 
             {/* QG */}
-            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: 16 }}>
+            <div style={{ background: COLORS.qgLight, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.qgColor, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <Plane size={14} /> Citilink (QG)
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <input value={qgQty} onChange={e => setQgQty(e.target.value)} style={inputS} placeholder="0" />
-                    <input value={qgUnit} onChange={e => setQgUnit(e.target.value.toUpperCase())} style={unitS} placeholder="YD" />
+                    <input value={qgQty} onChange={e => setQgQty(e.target.value)} style={{ ...inputS, background: COLORS.surface }} placeholder="0" />
+                    <input value={qgUnit} onChange={e => setQgUnit(e.target.value.toUpperCase())} style={{ ...unitS, background: COLORS.surface }} placeholder="YD" />
                     <button onClick={() => handleSave('QG')} style={saveS}>Simpan</button>
                 </div>
             </div>

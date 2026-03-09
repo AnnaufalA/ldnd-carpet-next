@@ -10,7 +10,7 @@ export default function PrematureSection({ prematureCounts }: { prematureCounts:
     return (
         <div style={{ background: COLORS.surface, borderRadius: 16, border: `1px solid ${COLORS.border}`, padding: 24, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#fff7ed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ea580c' }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: COLORS.orangeLight, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.orange }}>
                     <Zap size={20} strokeWidth={2.5} />
                 </div>
                 <div>
@@ -34,15 +34,15 @@ export default function PrematureSection({ prematureCounts }: { prematureCounts:
                         return (
                             <tr key={t} style={{ borderBottom: `1px solid ${COLORS.border}` }}>
                                 <td style={{ padding: '10px 12px', fontWeight: 700, fontFamily: 'monospace', color: COLORS.text }}>{t}</td>
-                                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: a > 0 ? '#ea580c' : COLORS.light }}>{a > 0 ? `${a} EA` : '—'}</td>
-                                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: u > 0 ? '#ea580c' : COLORS.light }}>{u > 0 ? `${u} EA` : '—'}</td>
+                                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: a > 0 ? COLORS.orange : COLORS.light }}>{a > 0 ? `${a} EA` : '—'}</td>
+                                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: u > 0 ? COLORS.orange : COLORS.light }}>{u > 0 ? `${u} EA` : '—'}</td>
                             </tr>
                         )
                     })}
-                    <tr style={{ background: '#f8fafc' }}>
+                    <tr style={{ background: COLORS.borderLight }}>
                         <td style={{ padding: '10px 12px', fontWeight: 800, color: COLORS.text }}>Total</td>
-                        <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: totalAisle > 0 ? '#ea580c' : COLORS.light }}>{totalAisle > 0 ? `${totalAisle} EA` : '—'}</td>
-                        <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: totalUnderseat > 0 ? '#ea580c' : COLORS.light }}>{totalUnderseat > 0 ? `${totalUnderseat} EA` : '—'}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: totalAisle > 0 ? COLORS.orange : COLORS.light }}>{totalAisle > 0 ? `${totalAisle} EA` : '—'}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: totalUnderseat > 0 ? COLORS.orange : COLORS.light }}>{totalUnderseat > 0 ? `${totalUnderseat} EA` : '—'}</td>
                     </tr>
                 </tbody>
             </table>

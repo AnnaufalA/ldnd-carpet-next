@@ -6,10 +6,85 @@
   padding: 0;
 }
 
+:root {
+  --color-bg: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-borderLight: #f1f5f9;
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+  --color-light: #94a3b8;
+  
+  --color-blue: #4f46e5;
+  --color-blueLight: #ede9fe;
+  --color-blueBorder: #c4b5fd;
+  
+  --color-danger: #dc2626;
+  --color-dangerLight: #fef2f2;
+  --color-dangerBorder: #fca5a5;
+  
+  --color-warning: #b45309;
+  --color-warningLight: #fffbeb;
+  
+  --color-green: #059669;
+  --color-greenLight: #ecfdf5;
+  --color-greenBorder: #86efac;
+  
+  --color-ga: #0369a1;
+  --color-gaLight: #e0f2fe;
+  
+  --color-qg: #15803d;
+  --color-qgLight: #f0fdf4;
+  
+  --color-orange: #ea580c;
+  --color-orangeLight: #fff7ed;
+  
+  --color-dangerDark: #7f1d1d;
+  --color-warningBorder: #fcd34d;
+  --color-warningDark: #78350f;
+}
+
+[data-theme='dark'] {
+  --color-bg: #09090b; /* Zinc 950 - very dark subtle gray/blue */
+  --color-surface: #18181b; /* Zinc 900 */
+  --color-border: #27272a; /* Zinc 800 */
+  --color-borderLight: #18181b; 
+  --color-text: #fafafa; /* Zinc 50 */
+  --color-muted: #a1a1aa; /* Zinc 400 */
+  --color-light: #52525b; /* Zinc 600 */
+  
+  --color-blue: #6366f1; /* Indigo 500 */
+  --color-blueLight: #312e81; /* Indigo 900 */
+  --color-blueBorder: #4338ca; /* Indigo 700 */
+  
+  --color-danger: #f87171; /* Soft red */
+  --color-dangerLight: #450a0a; /* Very dark red bg */
+  --color-dangerBorder: #7f1d1d;
+  --color-dangerDark: #fca5a5;
+  
+  --color-warning: #fbbf24; /* Soft amber */
+  --color-warningLight: #451a03; /* Very dark amber bg */
+  --color-warningBorder: #78350f;
+  --color-warningDark: #fcd34d;
+  
+  --color-green: #34d399; /* Soft emerald */
+  --color-greenLight: #022c22;
+  --color-greenBorder: #065f46;
+  
+  --color-ga: #38bdf8; /* Light sky blue */
+  --color-gaLight: #0c4a6e;
+  
+  --color-qg: #4ade80; /* Light green */
+  --color-qgLight: #14532d;
+  
+  --color-orange: #fb923c; /* Orange 400 */
+  --color-orangeLight: #7c2d12;
+}
+
 body {
   font-family: var(--font-inter), system-ui, sans-serif;
-  background-color: #f1f5f9;
-  color: #0f172a;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
