@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { INTERVALS } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,8 +34,16 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
 
-        // Get intervals for this aircraft type
-        const intervals = INTERVALS[acTypeGroup] || {}
+        // Get intervals for this aircraft type from DB
+        const dbIntervals = await prisma.carpetIntervalMaster.findMany({
+            where: { acTypeGroup }
+        })
+
+        // Convert to a map: { Aisle: 8, Underseat: 12 }
+        const intervalMap: Record<string, number> = {}
+        for (const record of dbIntervals) {
+            intervalMap[record.carpetType] = record.interval
+        }
 
         const aircraft = await prisma.aircraft.create({
             data: {
@@ -46,13 +53,13 @@ export async function POST(req: Request) {
                 airline,
                 carpetItems: {
                     create: [
-                        ...(intervals.Aisle !== undefined ? [{
+                        ...(intervalMap['Aisle'] !== undefined ? [{
                             carpetType: 'Aisle',
-                            intervalMonths: intervals.Aisle,
+                            intervalMonths: intervalMap['Aisle'],
                         }] : []),
-                        ...(intervals.Underseat !== undefined ? [{
+                        ...(intervalMap['Underseat'] !== undefined ? [{
                             carpetType: 'Underseat',
-                            intervalMonths: intervals.Underseat,
+                            intervalMonths: intervalMap['Underseat'],
                         }] : []),
                     ],
                 },

@@ -76,10 +76,4 @@ export interface RawmatQtyData {
     QG: { qty: number; unit: string }
 }
 
-export const INTERVALS: Record<string, Record<string, number>> = {
-    B737: { Aisle: 8, Underseat: 12 },
-    A320: { Aisle: 12 },
-    A330: { Aisle: 6, Underseat: 12 },
-    B777: { Aisle: 6, Underseat: 12 },
-    ATR: {},
-}
+

@@ -80,3 +80,16 @@ model RawmatQty {
 
   @@map("rawmat_qty")
 }
+
+// ============================================
+// Carpet Interval Master (Default Rules)
+// ============================================
+model CarpetIntervalMaster {
+  id          String   @id @default(uuid()) @db.Uuid
+  acTypeGroup String   @map("ac_type_group") @db.VarChar(10) // 'B737', 'A330', dll
+  carpetType  String   @map("carpet_type") @db.VarChar(15) // 'Aisle' or 'Underseat'
+  interval    Int      // 6, 12, 18 (in months)
+  
+  @@unique([acTypeGroup, carpetType])
+  @@map("carpet_interval_master")
+}
