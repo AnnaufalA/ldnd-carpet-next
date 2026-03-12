@@ -63,6 +63,7 @@ export interface DashboardData {
     totalNearDue: number
     totalAlreadyDue: number
     prematureCounts: PrematureCounts
+    prematureDetails: PrematureDetails
     rawmatQty: RawmatQtyData
 }
 
@@ -70,6 +71,19 @@ export interface PrematureCounts {
     aisle: TypeCount
     underseat: TypeCount
 }
+
+export type PrematureDetailItem = {
+    registration: string;
+    total: number;
+    dates: string[];
+}
+export type PrematureTypeDetails = {
+    [K in AircraftTypeGroup]: {
+        aisle: PrematureDetailItem[];
+        underseat: PrematureDetailItem[];
+    }
+}
+export interface PrematureDetails extends PrematureTypeDetails {}
 
 export interface RawmatQtyData {
     GA: { qty: number; unit: string }

@@ -116,7 +116,7 @@ export default function Dashboard() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 24 }} className="fade-up delay-2">
           <RawmatSection rawmatQty={data.rawmatQty} />
 
-          <PrematureSection prematureCounts={data.prematureCounts} />
+          <PrematureSection prematureCounts={data.prematureCounts} prematureDetails={data.prematureDetails} />
         </div>
       </main>
 

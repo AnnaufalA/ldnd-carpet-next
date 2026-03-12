@@ -1,4 +1,4 @@
-import type { DashboardData, AirlineBreakdown, CarpetBreakdown, TypeCount, PrematureCounts, RawmatQtyData } from '@/lib/types'
+import type { DashboardData, AirlineBreakdown, CarpetBreakdown, TypeCount, PrematureCounts, PrematureDetails, RawmatQtyData } from '@/lib/types'
 import { DEFAULT_RAWMAT_UNIT, NEAR_DUE_DAYS } from '@/lib/constants'
 
 function emptyTypeCount(): TypeCount {
@@ -17,6 +17,16 @@ function emptyPrematureCounts(): PrematureCounts {
   return { aisle: emptyTypeCount(), underseat: emptyTypeCount() }
 }
 
+function emptyPrematureDetails(): PrematureDetails {
+  return {
+    B737: { aisle: [], underseat: [] },
+    A320: { aisle: [], underseat: [] },
+    A330: { aisle: [], underseat: [] },
+    B777: { aisle: [], underseat: [] },
+    ATR: { aisle: [], underseat: [] },
+  }
+}
+
 export function buildDashboardData(args: {
   carpetItems: Array<{
     id: string
@@ -29,9 +39,10 @@ export function buildDashboardData(args: {
   }>
   totalAircraft: number
   prematureHistory: Array<{
+    doneDate: Date
     carpetItem: null | {
       carpetType: string
-      aircraft: null | { acTypeGroup: string }
+      aircraft: null | { acTypeGroup: string, registration: string }
     }
   }>
   rawmatRecords: Array<{ airline: string; qty: number; unit: string }>
@@ -65,12 +76,28 @@ export function buildDashboardData(args: {
   }
 
   const prematureCounts = emptyPrematureCounts()
+  const prematureDetails = emptyPrematureDetails()
   for (const h of args.prematureHistory) {
     const ci = h.carpetItem
     if (!ci || !ci.aircraft) continue
     const typeGroup = ci.aircraft.acTypeGroup as keyof TypeCount
     const carpetType = ci.carpetType.toLowerCase() as 'aisle' | 'underseat'
+    const reg = ci.aircraft.registration
+    const dateStr = Object.prototype.toString.call(h.doneDate) === '[object Date]' && !isNaN(h.doneDate.getTime()) 
+        ? h.doneDate.toISOString().split('T')[0] 
+        : String(h.doneDate)
+
     prematureCounts[carpetType][typeGroup]++
+
+    // Build details breakdown
+    const list = prematureDetails[typeGroup][carpetType]
+    const existing = list.find(x => x.registration === reg)
+    if (existing) {
+        existing.total++
+        existing.dates.push(dateStr)
+    } else {
+        list.push({ registration: reg, total: 1, dates: [dateStr] })
+    }
   }
 
   const rawmatQty: RawmatQtyData = {
@@ -91,6 +118,7 @@ export function buildDashboardData(args: {
     totalNearDue: nearDueItems.length,
     totalAlreadyDue: alreadyDueItems.length,
     prematureCounts,
+    prematureDetails,
     rawmatQty,
   }
 }
