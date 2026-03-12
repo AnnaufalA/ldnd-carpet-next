@@ -11,6 +11,9 @@ import { AddAircraftModal } from './components/Modals'
 import { IntervalSettingsModal } from './components/IntervalSettingsModal'
 import { RawmatModal } from './components/RawmatModal'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { StateCard } from '@/components/StateCard'
+import { AIRLINES, PAGE_MAX_WIDTH_DATA } from '@/lib/constants'
 
 /* ───────────── Main Data Page ───────────── */
 export default function DataPage() {
@@ -45,7 +48,7 @@ export default function DataPage() {
                 background: C.surface, borderBottom: `1px solid ${C.border}`,
                 position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             }}>
-                <div style={{ maxWidth: 1200, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ maxWidth: PAGE_MAX_WIDTH_DATA, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{
                             width: 38, height: 38, borderRadius: 10, background: C.blue,
@@ -69,14 +72,14 @@ export default function DataPage() {
                 </div>
             </header>
 
-            <main style={{ maxWidth: 1200, margin: '0 auto', padding: '28px 24px' }}>
+            <main style={{ maxWidth: PAGE_MAX_WIDTH_DATA, margin: '0 auto', padding: '28px 24px' }}>
                 {/* Toolbar */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
                     {/* Tabs */}
                     <div style={{ display: 'flex', gap: 6 }}>
                         {([
-                            { key: 'GA' as const, label: 'Garuda Indonesia', count: gaCount, color: C.gaColor, light: C.gaLight },
-                            { key: 'QG' as const, label: 'Citilink', count: qgCount, color: C.qgColor, light: C.qgLight },
+                            { key: 'GA' as const, label: AIRLINES.GA.name, count: gaCount, color: C.gaColor, light: C.gaLight },
+                            { key: 'QG' as const, label: AIRLINES.QG.name, count: qgCount, color: C.qgColor, light: C.qgLight },
                         ]).map(a => (
                             <button key={a.key} onClick={() => setTab(a.key)} style={{
                                 padding: '10px 20px', borderRadius: 12,
@@ -133,16 +136,19 @@ export default function DataPage() {
                 {/* Aircraft Table */}
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: 60 }}>
-                        <div style={{ width: 36, height: 36, border: `3px solid ${C.blue}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-                        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                        <p style={{ fontSize: 14, color: C.muted }}>Memuat data...</p>
+                        <LoadingSpinner color={C.blue} label="Memuat data..." />
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: 60, background: C.surface, borderRadius: 16, border: `1px solid ${C.border}` }}>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12, color: C.muted }}><Plane size={48} strokeWidth={1} /></div>
-                        <p style={{ fontSize: 15, fontWeight: 600, color: C.text }}>{search ? 'Tidak ditemukan' : `Belum ada pesawat ${tab === 'GA' ? 'Garuda' : 'Citilink'}`}</p>
-                        <p style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>Klik &quot;Tambah Pesawat&quot; untuk menambahkan</p>
-                    </div>
+                    <StateCard
+                        icon={<Plane size={48} strokeWidth={1} />}
+                        title={search ? 'Tidak ditemukan' : `Belum ada pesawat ${tab === 'GA' ? AIRLINES.GA.name : AIRLINES.QG.name}`}
+                        subtitle="Klik &quot;Tambah Pesawat&quot; untuk menambahkan"
+                        borderColor={C.border}
+                        background={C.surface}
+                        titleColor={C.text}
+                        subtitleColor={C.muted}
+                        padding={60}
+                    />
                 ) : (
                     <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflowX: 'auto' }}>
                         <table style={{ width: '100%', minWidth: 900, borderCollapse: 'collapse', textAlign: 'left' }}>

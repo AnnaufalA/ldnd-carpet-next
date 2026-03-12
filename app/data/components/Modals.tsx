@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { AlertTriangle, Edit } from 'lucide-react'
 import { C, AC_TYPES, getGroup, fmtDate } from '../constants'
+import { MODAL_WIDTH_PX, OVERLAY_Z_INDEX, PREMATURE_GRACE_DAYS } from '@/lib/constants'
+import { AIRLINES } from '@/lib/constants'
 import { AircraftData, CarpetItemData } from '../types'
 
 /* ───────────── Shared UI Helpers ───────────── */
@@ -19,10 +21,10 @@ export function Overlay({ onClose, children }: { onClose: () => void; children: 
     if (!mounted) return null
 
     return createPortal(
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: OVERLAY_Z_INDEX, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)' }} />
             <div style={{
-                position: 'relative', background: C.surface, borderRadius: 16, padding: 28, width: 420,
+                position: 'relative', background: C.surface, borderRadius: 16, padding: 28, width: MODAL_WIDTH_PX,
                 border: `1px solid ${C.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
             }} onClick={e => e.stopPropagation()}>
                 {children}
@@ -85,7 +87,7 @@ export function AddAircraftModal({ airline, onClose, onSaved }: {
     return (
         <Overlay onClose={onClose}>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 20 }}>
-                ✈️ Tambah Pesawat {airline === 'GA' ? 'Garuda' : 'Citilink'}
+                ✈️ Tambah Pesawat {airline === 'GA' ? AIRLINES.GA.name : AIRLINES.QG.name}
             </h3>
             <form onSubmit={handleSubmit}>
                 <Field label="Tipe Pesawat">
@@ -130,7 +132,7 @@ export function AddDoneModal({ carpetItem, registration, onClose, onSaved }: {
     let isPremature = false
     if (carpetItem.nextDue) {
         const threshold = new Date(carpetItem.nextDue)
-        threshold.setDate(threshold.getDate() - 10)
+        threshold.setDate(threshold.getDate() - PREMATURE_GRACE_DAYS)
         if (new Date(date) < threshold) {
             isPremature = true
         }

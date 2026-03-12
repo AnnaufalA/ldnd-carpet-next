@@ -1,18 +1,10 @@
 import 'dotenv/config'
 import { PrismaClient } from '../lib/generated/prisma/client.js'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { getGroup } from '../lib/constants'
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
-
-function getGroup(acType: string): string {
-    if (acType.startsWith('B737')) return 'B737'
-    if (acType.startsWith('A330')) return 'A330'
-    if (acType.startsWith('A320')) return 'A320'
-    if (acType.startsWith('B777')) return 'B777'
-    if (acType.startsWith('ATR')) return 'ATR'
-    return acType
-}
 
 const INTERVALS: Record<string, Record<string, number>> = {
     B737: { Aisle: 8, Underseat: 12 },

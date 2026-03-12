@@ -5,12 +5,15 @@ import Link from 'next/link'
 import { Plane, AlertTriangle, Clock, Database } from 'lucide-react'
 import type { DashboardData } from '@/lib/types'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { StateCard } from '@/components/StateCard'
 
 import { COLORS, formatDate } from './dashboard/constants'
 import StatusSection from './dashboard/components/StatusSection'
 import SummaryCard from './dashboard/components/SummaryCard'
 import RawmatSection from './dashboard/components/RawmatSection'
 import PrematureSection from './dashboard/components/PrematureSection'
+import { NEAR_DUE_DAYS, PAGE_MAX_WIDTH_DASHBOARD } from '@/lib/constants'
 
 /* ── Main page ── */
 export default function Dashboard() {
@@ -28,24 +31,19 @@ export default function Dashboard() {
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: COLORS.bg }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{
-          width: 36, height: 36, border: `3px solid ${COLORS.blue}`,
-          borderTopColor: 'transparent', borderRadius: '50%',
-          animation: 'spin 0.8s linear infinite', margin: '0 auto 12px',
-        }} />
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ fontSize: 14, color: COLORS.muted }}>Memuat data...</p>
-      </div>
+      <LoadingSpinner color={COLORS.blue} label="Memuat data..." />
     </div>
   )
 
   if (error || !data) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: COLORS.bg }}>
-      <div style={{ background: COLORS.surface, borderRadius: 16, padding: 32, textAlign: 'center', border: `1px solid ${COLORS.dangerBorder}` }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
-        <p style={{ color: COLORS.danger, fontWeight: 700 }}>{error ?? 'Tidak ada data'}</p>
-      </div>
+      <StateCard
+        icon="⚠️"
+        title={error ?? 'Tidak ada data'}
+        borderColor={COLORS.dangerBorder}
+        background={COLORS.surface}
+        titleColor={COLORS.danger}
+      />
     </div>
   )
 
@@ -57,7 +55,7 @@ export default function Dashboard() {
         position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
       }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: PAGE_MAX_WIDTH_DASHBOARD, margin: '0 auto', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
               width: 38, height: 38, borderRadius: 10,
@@ -88,18 +86,18 @@ export default function Dashboard() {
       </header>
 
       {/* Main */}
-      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+      <main style={{ maxWidth: PAGE_MAX_WIDTH_DASHBOARD, margin: '0 auto', padding: '32px 24px' }}>
         {/* Summary */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 24 }} className="fade-up">
           <SummaryCard label="Total Pesawat" value={data.totalAircraft} icon={<Plane size={24} strokeWidth={2.5} />} bg={COLORS.surface} numColor={COLORS.blue} />
           <SummaryCard label="Already Due" value={data.totalAlreadyDue} icon={<AlertTriangle size={24} strokeWidth={2.5} />} bg={COLORS.dangerLight} numColor={COLORS.danger} sub="melewati jadwal penggantian" />
-          <SummaryCard label="Near Due" value={data.totalNearDue} icon={<Clock size={24} strokeWidth={2.5} />} bg={COLORS.warningLight} numColor={COLORS.warning} sub="dalam 30 hari ke depan" />
+          <SummaryCard label="Near Due" value={data.totalNearDue} icon={<Clock size={24} strokeWidth={2.5} />} bg={COLORS.warningLight} numColor={COLORS.warning} sub={`dalam ${NEAR_DUE_DAYS} hari ke depan`} />
         </div>
 
         {/* Near Due */}
         <div style={{ marginBottom: 24 }} className="fade-up delay-1">
           <StatusSection
-            title="Near Due" subtitle="Carpet yang mendekati jadwal penggantian (dalam 30 hari)"
+            title="Near Due" subtitle={`Carpet yang mendekati jadwal penggantian (dalam ${NEAR_DUE_DAYS} hari)`}
             icon={<Clock size={24} strokeWidth={2.5} />} accentColor={COLORS.warning}
             data={data.nearDue} items={data.nearDueItems} isDanger={false}
           />
@@ -124,7 +122,7 @@ export default function Dashboard() {
 
       {/* Footer */}
       <footer style={{ borderTop: `1px solid ${COLORS.border}`, background: COLORS.surface, marginTop: 48 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '16px 24px', textAlign: 'center', fontSize: 12, color: COLORS.muted }}>
+        <div style={{ maxWidth: PAGE_MAX_WIDTH_DASHBOARD, margin: '0 auto', padding: '16px 24px', textAlign: 'center', fontSize: 12, color: COLORS.muted }}>
           LDND Carpet Monitor — GMF AeroAsia © {new Date().getFullYear()}
         </div>
       </footer>

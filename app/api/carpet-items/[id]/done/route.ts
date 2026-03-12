@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { PREMATURE_GRACE_DAYS } from '@/lib/constants'
 
 // POST — Record a new Done (replacement) for a carpet item
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -33,7 +34,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         let isPremature = false
         if (carpetItem.nextDue) {
             const threshold = new Date(carpetItem.nextDue)
-            threshold.setDate(threshold.getDate() - 10) // 10-day grace period
+            threshold.setDate(threshold.getDate() - PREMATURE_GRACE_DAYS)
             if (doneDateObj < threshold) {
                 isPremature = true
             }

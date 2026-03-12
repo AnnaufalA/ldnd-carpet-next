@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import { AlertTriangle, Clock } from 'lucide-react'
 import type { DashboardData } from '@/lib/types'
+import { MS_PER_DAY } from '@/lib/constants'
 import { COLORS, GA_TYPES, QG_TYPES } from '../constants'
+import { AIRLINES } from '@/lib/constants'
 
 /* ── Aircraft Type Vertical Row ── */
 function TypeRow({ type, count, isDanger }: { type: string; count: number; isDanger: boolean }) {
@@ -123,7 +125,7 @@ function DetailTable({ items }: { items: DashboardData['nearDueItems'] }) {
                         <tbody>
                             {sorted.map((item, i) => {
                                 const days = item.nextDue
-                                    ? Math.ceil((new Date(item.nextDue).getTime() - Date.now()) / 86400000)
+                                    ? Math.ceil((new Date(item.nextDue).getTime() - Date.now()) / MS_PER_DAY)
                                     : 0
                                 const overdue = days <= 0
                                 return (
@@ -188,8 +190,8 @@ export default function StatusSection({ title, subtitle, icon, accentColor, data
             {/* Body */}
             <div style={{ padding: '24px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32, marginBottom: 20 }}>
-                    <AirlineColumn name="Garuda Indonesia" badge="GA" color={COLORS.gaColor} items={items.filter(i => i.aircraft?.airline === 'GA')} isDanger={isDanger} types={GA_TYPES} />
-                    <AirlineColumn name="Citilink" badge="QG" color={COLORS.qgColor} items={items.filter(i => i.aircraft?.airline === 'QG')} isDanger={isDanger} types={QG_TYPES} showUnderseat={false} />
+                    <AirlineColumn name={AIRLINES.GA.name} badge="GA" color={COLORS.gaColor} items={items.filter(i => i.aircraft?.airline === 'GA')} isDanger={isDanger} types={GA_TYPES} />
+                    <AirlineColumn name={AIRLINES.QG.name} badge="QG" color={COLORS.qgColor} items={items.filter(i => i.aircraft?.airline === 'QG')} isDanger={isDanger} types={QG_TYPES} showUnderseat={false} />
                 </div>
                 <DetailTable items={items} />
             </div>

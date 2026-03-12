@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Trash2, Edit } from 'lucide-react'
 import { C, fmtDate, daysUntil } from '../constants'
+import { NEAR_DUE_DAYS } from '@/lib/constants'
 import { AircraftData, CarpetItemData } from '../types'
 import { AddDoneModal, EditDetailsModal, Overlay } from './Modals'
 
@@ -44,7 +45,7 @@ function CarpetRow({ item, ac, isFirst, isLast, rowSpan, onRefresh }: { item: Ca
 
     const days = daysUntil(item.nextDue)
     const overdue = days !== null && days <= 0
-    const nearDue = days !== null && days > 0 && days <= 30
+    const nearDue = days !== null && days > 0 && days <= NEAR_DUE_DAYS
 
     let statusBg = C.greenLight, statusColor = C.green, statusBorder = C.greenBorder, statusText = 'SAFE'
     if (overdue) { statusBg = C.dangerLight; statusColor = C.danger; statusBorder = C.dangerBorder; statusText = 'OVERDUE' }

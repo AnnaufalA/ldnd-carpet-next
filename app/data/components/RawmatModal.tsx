@@ -3,13 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Package, Save, RefreshCw } from 'lucide-react'
 import { C } from '../constants'
-import { Overlay } from './Modals'
-
-// Extracted style for inputs
-const inputStyle: React.CSSProperties = {
-    width: 60, padding: '8px 12px', borderRadius: 8, textAlign: 'center',
-    border: `1px solid ${C.border}`, fontSize: 14, color: C.text, outline: 'none',
-}
+import { Overlay, inputStyle } from './Modals'
+import { AIRLINES, DEFAULT_RAWMAT_UNIT, SUCCESS_INDICATOR_RESET_MS } from '@/lib/constants'
 
 export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved: () => void }) {
     const [loading, setLoading] = useState(true)
@@ -17,8 +12,8 @@ export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved
     const [savedGroup, setSavedGroup] = useState<'GA' | 'QG' | null>(null)
     const [qtyGA, setQtyGA] = useState<number | string>('')
     const [qtyQG, setQtyQG] = useState<number | string>('')
-    const [unitGA, setUnitGA] = useState('YD')
-    const [unitQG, setUnitQG] = useState('YD')
+    const [unitGA, setUnitGA] = useState<string>(DEFAULT_RAWMAT_UNIT)
+    const [unitQG, setUnitQG] = useState<string>(DEFAULT_RAWMAT_UNIT)
 
     useEffect(() => {
         fetch('/api/rawmat')
@@ -46,7 +41,7 @@ export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved
             })
             onSaved() // trigger parent refresh if necessary, though Dashboard updates on its own mount
             setSavedGroup(airline)
-            setTimeout(() => setSavedGroup(null), 2000)
+            setTimeout(() => setSavedGroup(null), SUCCESS_INDICATOR_RESET_MS)
         } catch (err) {
             console.error('Failed to save rawmat', err)
             alert('Gagal menyimpan rawmat')
@@ -62,8 +57,8 @@ export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved
                     <Package size={20} />
                 </div>
                 <div>
-                    <h2 style={{ fontSize: 18, fontWeight: 800, color: C.text }}>Input QYT Rawmat</h2>
-                    <p style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>Jumlah QYT Rawmat Tersedia.</p>
+                    <h2 style={{ fontSize: 18, fontWeight: 800, color: C.text }}>Input QTY Rawmat</h2>
+                    <p style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>Jumlah QTY Rawmat Tersedia.</p>
                 </div>
             </div>
 
@@ -74,11 +69,11 @@ export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved
                     {/* GA Box */}
                     <div style={{ background: C.gaLight, border: `1px solid ${C.gaColor}40`, padding: '16px', borderRadius: 12 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.gaColor, fontWeight: 700, fontSize: 13, marginBottom: 16 }}>
-                            <span>✈️</span> Garuda Indonesia (GA)
+                            <span>✈️</span> {AIRLINES.GA.name} (GA)
                         </div>
                         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                             <input type="number" value={qtyGA} onChange={e => setQtyGA(e.target.value)} style={{ ...inputStyle, width: 90, flex: 1, fontWeight: 700, fontSize: 16 }} />
-                            <input value={unitGA} onChange={e => setUnitGA(e.target.value)} style={{ ...inputStyle, width: 60, textTransform: 'uppercase' }} placeholder="YD" />
+                            <input value={unitGA} onChange={e => setUnitGA(e.target.value)} style={{ ...inputStyle, width: 60, textTransform: 'uppercase' }} placeholder={DEFAULT_RAWMAT_UNIT} />
                             <button onClick={() => handleSave('GA')} disabled={saving === 'GA'} style={{ background: savedGroup === 'GA' ? C.green : C.blue, color: '#fff', border: 'none', padding: '10px 16px', borderRadius: 8, fontWeight: 700, cursor: saving === 'GA' ? 'not-allowed' : 'pointer', width: 110, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 {saving === 'GA' ? <RefreshCw size={16} className="spin" /> : savedGroup === 'GA' ? 'Berhasil ✓' : 'Simpan'}
                             </button>
@@ -88,11 +83,11 @@ export function RawmatModal({ onClose, onSaved }: { onClose: () => void, onSaved
                     {/* QG Box */}
                     <div style={{ background: C.qgLight, border: `1px solid ${C.qgColor}40`, padding: '16px', borderRadius: 12 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.qgColor, fontWeight: 700, fontSize: 13, marginBottom: 16 }}>
-                            <span>✈️</span> Citilink (QG)
+                            <span>✈️</span> {AIRLINES.QG.name} (QG)
                         </div>
                         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                             <input type="number" value={qtyQG} onChange={e => setQtyQG(e.target.value)} style={{ ...inputStyle, width: 90, flex: 1, fontWeight: 700, fontSize: 16 }} />
-                            <input value={unitQG} onChange={e => setUnitQG(e.target.value)} style={{ ...inputStyle, width: 60, textTransform: 'uppercase' }} placeholder="YD" />
+                            <input value={unitQG} onChange={e => setUnitQG(e.target.value)} style={{ ...inputStyle, width: 60, textTransform: 'uppercase' }} placeholder={DEFAULT_RAWMAT_UNIT} />
                             <button onClick={() => handleSave('QG')} disabled={saving === 'QG'} style={{ background: savedGroup === 'QG' ? C.green : C.blue, color: '#fff', border: 'none', padding: '10px 16px', borderRadius: 8, fontWeight: 700, cursor: saving === 'QG' ? 'not-allowed' : 'pointer', width: 110, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 {saving === 'QG' ? <RefreshCw size={16} className="spin" /> : savedGroup === 'QG' ? 'Berhasil ✓' : 'Simpan'}
                             </button>

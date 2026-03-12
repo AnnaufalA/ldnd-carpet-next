@@ -3,6 +3,7 @@
 import { Plane, Package } from 'lucide-react'
 import type { DashboardData } from '@/lib/types'
 import { COLORS } from '../constants'
+import { AIRLINES } from '@/lib/constants'
 
 export default function RawmatSection({ rawmatQty }: { rawmatQty: DashboardData['rawmatQty'] }) {
     return (
@@ -20,7 +21,7 @@ export default function RawmatSection({ rawmatQty }: { rawmatQty: DashboardData[
             {/* GA */}
             <div style={{ background: COLORS.gaLight, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.gaColor, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Plane size={16} /> Garuda Indonesia (GA)
+                    <Plane size={16} /> {AIRLINES.GA.name} (GA)
                 </div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: COLORS.text }}>
                     {rawmatQty.GA.qty} <span style={{ fontSize: 14, color: COLORS.muted, fontWeight: 600 }}>{rawmatQty.GA.unit}</span>
@@ -30,7 +31,7 @@ export default function RawmatSection({ rawmatQty }: { rawmatQty: DashboardData[
             {/* QG */}
             <div style={{ background: COLORS.qgLight, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.qgColor, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Plane size={16} /> Citilink (QG)
+                    <Plane size={16} /> {AIRLINES.QG.name} (QG)
                 </div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: COLORS.text }}>
                     {rawmatQty.QG.qty} <span style={{ fontSize: 14, color: COLORS.muted, fontWeight: 600 }}>{rawmatQty.QG.unit}</span>

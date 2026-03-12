@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Settings, Save, RefreshCw } from 'lucide-react'
 import { C, AC_TYPES } from '../constants'
+import { getGroup } from '@/lib/constants'
+import { MAX_INTERVAL_MONTHS } from '@/lib/constants'
 import { Overlay, Field, inputStyle } from './Modals'
 
 interface IntervalMaster {
@@ -77,12 +79,7 @@ export function IntervalSettingsModal({ onClose, onRefresh }: { onClose: () => v
 
     // Get all unique groups
     const groups = Array.from(new Set([...AC_TYPES.GA, ...AC_TYPES.QG].map(t => {
-        if (t.startsWith('B737')) return 'B737'
-        if (t.startsWith('A330')) return 'A330'
-        if (t.startsWith('A320')) return 'A320'
-        if (t.startsWith('B777')) return 'B777'
-        if (t.startsWith('ATR')) return 'ATR'
-        return t
+        return getGroup(t)
     })))
 
     return (
@@ -120,7 +117,7 @@ export function IntervalSettingsModal({ onClose, onRefresh }: { onClose: () => v
                                         <td style={{ padding: '12px 8px', fontWeight: 700, color: C.text }}>{g}</td>
                                         <td style={{ padding: '8px' }}>
                                             <input
-                                                type="number" min="1" max="60"
+                                                type="number" min="1" max={MAX_INTERVAL_MONTHS}
                                                 value={intervals[g]?.['Aisle'] || ''}
                                                 onChange={e => handleChange(g, 'Aisle', e.target.value)}
                                                 style={{ ...inputStyle, width: 80, padding: '8px 12px', textAlign: 'center' }}
@@ -129,7 +126,7 @@ export function IntervalSettingsModal({ onClose, onRefresh }: { onClose: () => v
                                         <td style={{ padding: '8px' }}>
                                             {g !== 'A320' && g !== 'ATR' && ( // Quick hack to hide underseat for non-widebodies that don't have it natively mapped. Alternatively, just show for all.
                                                 <input
-                                                    type="number" min="1" max="60"
+                                                    type="number" min="1" max={MAX_INTERVAL_MONTHS}
                                                     value={intervals[g]?.['Underseat'] || ''}
                                                     onChange={e => handleChange(g, 'Underseat', e.target.value)}
                                                     style={{ ...inputStyle, width: 80, padding: '8px 12px', textAlign: 'center' }}
